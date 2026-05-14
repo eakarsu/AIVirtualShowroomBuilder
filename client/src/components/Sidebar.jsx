@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Box, Layers, ShoppingBag, Palette, BarChart3, Target, PenTool, Sparkles, DollarSign, Users, Package, Tag, Star, Warehouse, LayoutGrid, LogOut, Glasses } from 'lucide-react';
+import { Box, Layers, ShoppingBag, Palette, BarChart3, Target, PenTool, Sparkles, DollarSign, Users, Package, Tag, Star, Warehouse, LayoutGrid, LogOut, Glasses, Wand2 } from 'lucide-react';
 
 const aiFeatures = [
+  { path: '/ai-tools', label: 'AI Tools Hub', icon: Wand2, ai: true },
   { path: '/models3d', label: '3D Model Generation', icon: Box, ai: true },
   { path: '/layouts', label: 'Store Layouts', icon: LayoutGrid, ai: true },
   { path: '/artryons', label: 'AR Try-On', icon: Glasses, ai: true },

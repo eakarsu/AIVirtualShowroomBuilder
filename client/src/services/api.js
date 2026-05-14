@@ -29,11 +29,24 @@ export const api = {
   update: (resource, id, data) => request('PUT', `/${resource}/${id}`, data),
   remove: (resource, id) => request('DELETE', `/${resource}/${id}`),
 
-  // AI endpoints
+  // Per-resource AI endpoints
   generate3D: (id) => request('POST', `/models3d/${id}/generate`),
   generateLayout: (id) => request('POST', `/layouts/${id}/generate`),
   analyzeARTryon: (id) => request('POST', `/artryons/${id}/analyze`),
   generateDescription: (id) => request('POST', `/descriptions/${id}/generate`),
   generateStyle: (id) => request('POST', `/styles/${id}/generate`),
   optimizePrice: (id) => request('POST', `/pricing/${id}/optimize`),
+
+  // Advanced AI Tools
+  aiResults: (page = 1, limit = 20) => request('GET', `/ai/results?page=${page}&limit=${limit}`),
+  roomLayoutOptimizer: (payload) => request('POST', '/ai/room-layout-optimizer', payload),
+  productDescriptionEnhancer: (payload) => request('POST', '/ai/product-description-enhancer', payload),
+  lightingMoodGenerator: (payload) => request('POST', '/ai/lighting-mood-generator', payload),
+  visitorBehaviorAnalyzer: (payload) => request('POST', '/ai/visitor-behavior-analyzer', payload),
+  showroomComparison: (payload) => request('POST', '/ai/showroom-comparison', payload),
+  productRecommendations: (payload) => request('POST', '/ai/product-recommendations', payload),
+  merchandisingOptimizer: (payload) => request('POST', '/ai/merchandising-optimizer', payload),
+  seasonalLayoutRecommendation: (payload) => request('POST', '/ai/seasonal-layout-recommendation', payload),
+  customerJourneyHeatmap: (payload) => request('POST', '/ai/customer-journey-heatmap', payload),
+  competitorShowroomAnalysis: (payload) => request('POST', '/ai/competitor-showroom-analysis', payload),
 };

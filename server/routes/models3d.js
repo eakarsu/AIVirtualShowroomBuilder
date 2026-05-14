@@ -7,11 +7,17 @@ const router = Router();
 
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query(`
-      SELECT m.*, p.name as product_name, p.image_url as product_image
-      FROM product_3d_models m LEFT JOIN products p ON m.product_id = p.id ORDER BY m.id
-    `);
-    res.json(result.rows);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+    const [rows, countRes] = await Promise.all([
+      pool.query(`SELECT m.*, p.name as product_name, p.image_url as product_image
+        FROM product_3d_models m LEFT JOIN products p ON m.product_id = p.id
+        ORDER BY m.id DESC LIMIT $1 OFFSET $2`, [limit, offset]),
+      pool.query('SELECT COUNT(*) FROM product_3d_models'),
+    ]);
+    const total = parseInt(countRes.rows[0].count);
+    res.json({ data: rows.rows, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

@@ -1,8 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, LayoutGrid, Glasses, PenTool, Sparkles, DollarSign, ShoppingBag, Users, Package, Warehouse, Palette, Tag, Star, BarChart3, Target } from 'lucide-react';
+import { Box, LayoutGrid, Glasses, PenTool, Sparkles, DollarSign, ShoppingBag, Users, Package, Warehouse, Palette, Tag, Star, BarChart3, Target, Wand2 } from 'lucide-react';
 
 const features = [
+  {
+    path: '/ai-tools', title: 'AI Tools Hub', icon: Wand2, ai: true,
+    desc: 'Advanced AI: room layout optimizer, lighting mood generator, visitor behavior, comparison & history.',
+    color: '#a855f7', stats: '6 tools'
+  },
   {
     path: '/models3d', title: '3D Model Generation', icon: Box, ai: true,
     desc: 'Generate photorealistic 3D models from product photos using AI. Support for GLB, OBJ, FBX formats.',
