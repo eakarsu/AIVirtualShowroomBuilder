@@ -16,6 +16,9 @@ import MerchandisingOptimizer from './pages/MerchandisingOptimizer.jsx';
 import SeasonalLayoutRecommendation from './pages/SeasonalLayoutRecommendation.jsx';
 import CustomerJourneyHeatmap from './pages/CustomerJourneyHeatmap.jsx';
 import CompetitorShowroomAnalysis from './pages/CompetitorShowroomAnalysis.jsx';
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
 // === Batch 08 Gaps & Frontend Mounts ===
 import CfPersonalizedProductRecommendationsFromBrowsingBehavior from './pages/CfPersonalizedProductRecommendationsFromBrowsingBehavior'
 import CfVisualMerchandisingOptimizerUsingConversionData from './pages/CfVisualMerchandisingOptimizerUsingConversionData'
@@ -69,6 +72,9 @@ export default function App() {
       <Sidebar user={user} onLogout={handleLogout} />
       <div className="main-content">
         <Routes>
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<FeaturePage resource="products" title="Product Catalog" subtitle="Manage your product inventory" />} />
           <Route path="/models3d" element={<FeaturePage resource="models3d" title="3D Model Generation" subtitle="AI-powered 3D models from product photos" aiFeature="generate3D" isAI />} />

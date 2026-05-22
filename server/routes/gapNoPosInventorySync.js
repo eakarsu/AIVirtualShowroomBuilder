@@ -1,10 +1,9 @@
 // // === Batch 08 Gaps & Frontend Mounts ===
 // Feature: No POS inventory sync
 // Kind: gap_non_ai  Project: AIVirtualShowroomBuilder
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-let pool = null;
-try { pool = require('../config/database'); } catch (_) { try { pool = require('../db'); } catch (_) { try { pool = require('../db.js'); } catch (_) {} } }
+import pool from '../db.js';
 
 let _gapTableInit = false;
 async function ensureGapTable() {
@@ -77,4 +76,4 @@ router.get('/history', async (req, res) => {
   } catch (_) { res.json({ history: [] }); }
 });
 
-module.exports = router;
+export default router;
