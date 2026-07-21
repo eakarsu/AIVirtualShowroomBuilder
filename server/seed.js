@@ -5,13 +5,11 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME || 'ai_showroom',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-});
+if (process.env.ALLOW_DESTRUCTIVE_SEED !== 'true') throw new Error('ALLOW_DESTRUCTIVE_SEED=true is required');
+if (!process.env.DATABASE_URL || !process.env.SEED_ADMIN_PASSWORD || !process.env.SEED_ADMIN_EMAIL) {
+  throw new Error('DATABASE_URL, SEED_ADMIN_EMAIL, and SEED_ADMIN_PASSWORD are required');
+}
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function seed() {
   console.log('🔧 Creating tables...');
@@ -290,10 +288,10 @@ async function seed() {
   console.log('✅ Tables created');
 
   // Seed Users
-  const hashedPassword = await bcrypt.hash(process.env.DEMO_PASSWORD || 'admin123', 10);
+  const hashedPassword = await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD, 12);
   await pool.query(
     `INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4)`,
-    [process.env.DEMO_EMAIL || 'admin@showroom.com', hashedPassword, 'Admin User', 'admin']
+    [process.env.SEED_ADMIN_EMAIL, hashedPassword, 'Seed Administrator', 'admin']
   );
   console.log('👤 User seeded');
 

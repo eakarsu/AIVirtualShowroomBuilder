@@ -20,11 +20,6 @@ export default function Login({ onLogin }) {
     setLoading(false);
   };
 
-  const fillDemo = () => {
-    setEmail('admin@showroom.com');
-    setPassword('admin123');
-  };
-
   return (
     <div className="login-page">
       <div className="login-card">
@@ -64,9 +59,6 @@ export default function Login({ onLogin }) {
             {loading ? <><span className="spinner"></span> Signing in...</> : 'Sign In'}
           </button>
 
-          <button type="button" className="btn btn-fill" onClick={fillDemo} style={{ width: '100%', justifyContent: 'center' }}>
-            Fill Demo Credentials
-          </button>
         </form>
 
         <div style={{ textAlign: 'center', marginTop: 24, fontSize: 12, color: 'var(--text-muted)' }}>

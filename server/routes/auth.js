@@ -18,24 +18,29 @@ router.post('/login', async (req, res) => {
     const token = generateToken(user);
     res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Login failed:', err.message);
+    res.status(500).json({ error: 'internal server error' });
   }
 });
 
 router.post('/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!email || !name || typeof password !== 'string' || password.length < 12) {
+      return res.status(400).json({ error: 'email, name, and a password of at least 12 characters are required' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 12);
     const result = await pool.query(
-      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id, email, name, role',
-      [email, hashedPassword, name]
+      'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
+      [email, hashedPassword, name, 'showroom_operator']
     );
     const user = result.rows[0];
     const token = generateToken(user);
     res.status(201).json({ token, user });
   } catch (err) {
     if (err.code === '23505') return res.status(400).json({ error: 'Email already exists' });
-    res.status(500).json({ error: err.message });
+    console.error('Registration failed:', err.message);
+    res.status(500).json({ error: 'internal server error' });
   }
 });
 

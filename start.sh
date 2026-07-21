@@ -1,88 +1,44 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "========================================="
-echo "  AI Virtual Showroom Builder"
-echo "  Starting Application..."
-echo "========================================="
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$ROOT_DIR/.env"
+API_DIR="$ROOT_DIR"
+UI_DIR="$ROOT_DIR/client"
+MIGRATION_DIR="$ROOT_DIR/server/migrations"
 
-# Load environment
-set -a
-source .env 2>/dev/null
-set +a
+read_env() { awk -F= -v key="$1" '$0 !~ /^[[:space:]]*#/ && $1 == key { value=substr($0,index($0,"=")+1); gsub(/^[[:space:]]+|[[:space:]]+$/, "", value); gsub(/^["\047]|["\047]$/, "", value); print value; exit }' "$ENV_FILE"; }
+load_env_key() { local key="$1" parsed; [ -n "${!key-}" ] && return 0; [ -f "$ENV_FILE" ] || return 0; parsed="$(read_env "$key")"; [ -z "$parsed" ] || export "$key=$parsed"; }
+for key in DATABASE_URL JWT_SECRET GOVERNANCE_TENANT_ID OPENROUTER_API_KEY ENABLE_GENERATED_FEATURES ALLOW_SCHEMA_MIGRATION BACKEND_PORT FRONTEND_PORT; do load_env_key "$key"; done
 
-SERVER_PORT=${SERVER_PORT:-3001}
-CLIENT_PORT=${CLIENT_PORT:-5173}
-
-# Kill processes on our ports
-echo ""
-echo "🔧 Cleaning up ports $SERVER_PORT and $CLIENT_PORT..."
-lsof -ti:$SERVER_PORT | xargs kill -9 2>/dev/null
-lsof -ti:$CLIENT_PORT | xargs kill -9 2>/dev/null
-sleep 1
-echo "✅ Ports cleared"
-
-# Install dependencies
-echo ""
-echo "📦 Installing dependencies..."
-npm install --silent 2>&1 | tail -1
-cd client && npm install --silent 2>&1 | tail -1
-cd ..
-echo "✅ Dependencies installed"
-
-# Setup database
-echo ""
-echo "🗄️  Setting up database..."
-DB_NAME=${DB_NAME:-ai_showroom}
-DB_USER=${DB_USER:-postgres}
-
-# Create database if not exists
-psql -U "$DB_USER" -tc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" 2>/dev/null | grep -q 1 || \
-  createdb -U "$DB_USER" "$DB_NAME" 2>/dev/null
-
-if [ $? -ne 0 ]; then
-  echo "⚠️  Could not create database. Trying with current user..."
-  psql -tc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" 2>/dev/null | grep -q 1 || \
-    createdb "$DB_NAME" 2>/dev/null
-fi
-
-echo "✅ Database ready"
-
-# Seed data
-echo ""
-echo "🌱 Seeding database..."
-node server/seed.js
-echo ""
-
-# Start servers with hot reload
-echo "========================================="
-echo "  🚀 Starting servers..."
-echo "  Backend:  http://localhost:$SERVER_PORT"
-echo "  Frontend: http://localhost:$CLIENT_PORT"
-echo "  Login:    admin@showroom.com / admin123"
-echo "========================================="
-echo ""
-
-# Start backend with --watch for auto-reload
-node --watch server/index.js &
-BACKEND_PID=$!
-
-# Start frontend with Vite HMR
-cd client && npm run dev &
-FRONTEND_PID=$!
-
-# Handle shutdown
-cleanup() {
-  echo ""
-  echo "🛑 Shutting down..."
-  kill $BACKEND_PID 2>/dev/null
-  kill $FRONTEND_PID 2>/dev/null
-  lsof -ti:$SERVER_PORT | xargs kill -9 2>/dev/null
-  lsof -ti:$CLIENT_PORT | xargs kill -9 2>/dev/null
-  echo "✅ Application stopped"
-  exit 0
+BACKEND_PORT="${BACKEND_PORT:-3001}"
+FRONTEND_PORT="${FRONTEND_PORT:-5173}"
+fail() { printf 'error: %s\n' "$*" >&2; exit 1; }
+check_config() {
+  local jwt_secret="${JWT_SECRET:-}"
+  command -v node >/dev/null || fail "node is required"
+  command -v npm >/dev/null || fail "npm is required"
+  [ -n "${DATABASE_URL:-}" ] || fail "DATABASE_URL is required"
+  [ -n "${GOVERNANCE_TENANT_ID:-}" ] || fail "GOVERNANCE_TENANT_ID is required"
+  [ "${#jwt_secret}" -ge 32 ] || fail "JWT_SECRET must contain at least 32 characters"
+  case "$DATABASE_URL" in *example*|*changeme*|*password@*) fail "DATABASE_URL contains a placeholder" ;; esac
+  printf 'configuration valid for tenant %s\n' "$GOVERNANCE_TENANT_ID"
 }
-
-trap cleanup SIGINT SIGTERM
-
-# Wait for processes
-wait
+migrate() {
+  check_config
+  [ "${ALLOW_SCHEMA_MIGRATION:-0}" = "1" ] || fail "set ALLOW_SCHEMA_MIGRATION=1 for the explicit migration command"
+  command -v psql >/dev/null || fail "psql is required for migrations"
+  local found=0
+  for migration in "$MIGRATION_DIR"/*.sql; do [ -f "$migration" ] || continue; found=1; psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$migration"; done
+  [ "$found" = "1" ] || fail "no migrations found"
+}
+start_services() {
+  check_config
+  [ -d "$API_DIR/node_modules" ] || fail "backend dependencies are missing; install them explicitly"
+  [ -d "$UI_DIR/node_modules" ] || fail "frontend dependencies are missing; install them explicitly"
+  (cd "$API_DIR" && PORT="$BACKEND_PORT" node server/index.js) & api_pid=$!
+  (cd "$UI_DIR" && npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT") & ui_pid=$!
+  trap 'kill "$api_pid" "$ui_pid" 2>/dev/null || true; wait "$api_pid" "$ui_pid" 2>/dev/null || true' INT TERM EXIT
+  wait "$api_pid" "$ui_pid"
+}
+case "${1:-check}" in check) check_config ;; migrate) migrate ;; start) start_services ;; *) fail "usage: $0 {check|migrate|start}" ;; esac

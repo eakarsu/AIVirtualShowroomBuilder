@@ -29,12 +29,15 @@ import Cf3dModelAutoGenerationFromProductPhotos from './pages/Cf3dModelAutoGener
 import GapNoAiDrivenPersonalizedProductRecommendations from './pages/GapNoAiDrivenPersonalizedProductRecommendations'
 import GapNoAiVisualMerchandisingOptimizer from './pages/GapNoAiVisualMerchandisingOptimizer'
 import GapNoAiGenerated3dModelAutoRigging from './pages/GapNoAiGenerated3dModelAutoRigging'
-import GapLimitedECommercePlatformIntegrationOnlyA from './pages/GapLimitedECommercePlatformIntegrationOnlyA'
 import GapNoNativeWebarWebxrPlatformIntegration from './pages/GapNoNativeWebarWebxrPlatformIntegration'
 import GapNoCustomerPathHeatmapVisualization from './pages/GapNoCustomerPathHeatmapVisualization'
 import GapNoPosInventorySync from './pages/GapNoPosInventorySync'
 import GapNoWebhooks from './pages/GapNoWebhooks'
 import GapNoNotificationsSubsystem from './pages/GapNoNotificationsSubsystem'
+
+function ProtectedRoute({ children }) {
+  return localStorage.getItem('token') ? children : <Navigate to="/" replace />;
+}
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -116,7 +119,6 @@ export default function App() {
       <Route path="/gap-no-ai-driven-personalized-product-recommendations" element={<ProtectedRoute><GapNoAiDrivenPersonalizedProductRecommendations /></ProtectedRoute>} />
       <Route path="/gap-no-ai-visual-merchandising-optimizer" element={<ProtectedRoute><GapNoAiVisualMerchandisingOptimizer /></ProtectedRoute>} />
       <Route path="/gap-no-ai-generated-3d-model-auto-rigging-from-photos" element={<ProtectedRoute><GapNoAiGenerated3dModelAutoRigging /></ProtectedRoute>} />
-      <Route path="/gap-limited-e-commerce-platform-integration-only-a-generic-integrations" element={<ProtectedRoute><GapLimitedECommercePlatformIntegrationOnlyA /></ProtectedRoute>} />
       <Route path="/gap-no-native-webar-webxr-platform-integration" element={<ProtectedRoute><GapNoNativeWebarWebxrPlatformIntegration /></ProtectedRoute>} />
       <Route path="/gap-no-customer-path-heatmap-visualization" element={<ProtectedRoute><GapNoCustomerPathHeatmapVisualization /></ProtectedRoute>} />
       <Route path="/gap-no-pos-inventory-sync" element={<ProtectedRoute><GapNoPosInventorySync /></ProtectedRoute>} />
