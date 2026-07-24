@@ -9,7 +9,11 @@ MIGRATION_DIR="$ROOT_DIR/server/migrations"
 
 read_env() { awk -F= -v key="$1" '$0 !~ /^[[:space:]]*#/ && $1 == key { value=substr($0,index($0,"=")+1); gsub(/^[[:space:]]+|[[:space:]]+$/, "", value); gsub(/^["\047]|["\047]$/, "", value); print value; exit }' "$ENV_FILE"; }
 load_env_key() { local key="$1" parsed; [ -n "${!key-}" ] && return 0; [ -f "$ENV_FILE" ] || return 0; parsed="$(read_env "$key")"; [ -z "$parsed" ] || export "$key=$parsed"; }
-for key in DATABASE_URL JWT_SECRET GOVERNANCE_TENANT_ID OPENROUTER_API_KEY ENABLE_GENERATED_FEATURES ALLOW_SCHEMA_MIGRATION BACKEND_PORT FRONTEND_PORT; do load_env_key "$key"; done
+[ -f "$ENV_FILE" ] || { echo 'error: missing .env' >&2; exit 1; }
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
 
 BACKEND_PORT="${BACKEND_PORT:-3001}"
 FRONTEND_PORT="${FRONTEND_PORT:-5173}"
@@ -26,7 +30,7 @@ check_config() {
 }
 migrate() {
   check_config
-  [ "${ALLOW_SCHEMA_MIGRATION:-0}" = "1" ] || fail "set ALLOW_SCHEMA_MIGRATION=1 for the explicit migration command"
+  case "${ALLOW_SCHEMA_MIGRATION:-0}" in 1|true) ;; *) fail "set ALLOW_SCHEMA_MIGRATION=true for the explicit migration command" ;; esac
   command -v psql >/dev/null || fail "psql is required for migrations"
   local found=0
   for migration in "$MIGRATION_DIR"/*.sql; do [ -f "$migration" ] || continue; found=1; psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$migration"; done
@@ -41,4 +45,4 @@ start_services() {
   trap 'kill "$api_pid" "$ui_pid" 2>/dev/null || true; wait "$api_pid" "$ui_pid" 2>/dev/null || true' INT TERM EXIT
   wait "$api_pid" "$ui_pid"
 }
-case "${1:-check}" in check) check_config ;; migrate) migrate ;; start) start_services ;; *) fail "usage: $0 {check|migrate|start}" ;; esac
+case "${1:-start}" in check) check_config ;; migrate) migrate ;; start) start_services ;; *) fail "usage: $0 {check|migrate|start}" ;; esac

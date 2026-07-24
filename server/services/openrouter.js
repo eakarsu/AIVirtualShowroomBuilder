@@ -1,21 +1,19 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022';
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY?.trim();
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL?.trim();
+const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL?.trim().replace(/\/$/, '');
 
 export async function callOpenRouter(systemPrompt, userPrompt) {
-  if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'your_openrouter_api_key_here') {
-    return {
-      success: false,
-      error: 'OpenRouter API key not configured. Please set OPENROUTER_API_KEY in .env file.',
-      mock: true,
-      result: generateMockResponse(systemPrompt, userPrompt)
-    };
+  if (!OPENROUTER_API_KEY) throw new Error('OPENROUTER_API_KEY is required');
+  if (!OPENROUTER_MODEL) throw new Error('OPENROUTER_MODEL is required');
+  if (OPENROUTER_BASE_URL !== 'https://openrouter.ai/api/v1') {
+    throw new Error('OPENROUTER_BASE_URL must be https://openrouter.ai/api/v1');
   }
 
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
@@ -34,17 +32,20 @@ export async function callOpenRouter(systemPrompt, userPrompt) {
       })
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
-    if (data.error) {
+    if (!response.ok || data.error) {
       return { success: false, error: data.error.message || 'OpenRouter API error' };
     }
 
-    const content = data.choices?.[0]?.message?.content || '';
+    const content = data.choices?.[0]?.message?.content;
+    if (typeof content !== 'string' || !content.trim()) {
+      return { success: false, error: 'OpenRouter returned an empty response' };
+    }
     return {
       success: true,
       result: content,
-      model: data.model,
+      model: data.model || OPENROUTER_MODEL,
       usage: data.usage
     };
   } catch (err) {

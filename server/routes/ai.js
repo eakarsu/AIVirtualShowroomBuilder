@@ -18,14 +18,10 @@ function parseAIJson(text) {
 }
 
 async function persistAIResult(userId, endpoint, inputData, result) {
-  try {
-    await pool.query(
-      'INSERT INTO ai_results (user_id, endpoint, input_data, result) VALUES ($1, $2, $3, $4)',
-      [userId, endpoint, JSON.stringify(inputData), JSON.stringify(result)]
-    );
-  } catch (err) {
-    console.error('Failed to persist AI result:', err.message);
-  }
+  await pool.query(
+    'INSERT INTO ai_results (user_id, endpoint, input_data, result) VALUES ($1, $2, $3, $4)',
+    [userId, endpoint, JSON.stringify(inputData), JSON.stringify(result)]
+  );
 }
 
 // GET /api/ai/results — paginated AI result history
