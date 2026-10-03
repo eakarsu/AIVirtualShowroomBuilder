@@ -240,7 +240,9 @@ export default function FeaturePage({ resource, title, subtitle, aiFeature, isAI
     try {
       setLoading(true);
       const data = await api.getAll(resource);
-      setItems(data);
+      const items = Array.isArray(data) ? data : data?.data;
+      if (!Array.isArray(items)) throw new Error('Invalid list response');
+      setItems(items);
     } catch (err) {
       showToast(err.message, 'error');
     }
