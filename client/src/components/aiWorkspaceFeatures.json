@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Cf3dModelAutoGenerationFromProductPhotos",
+    "id": "cf-3d-model-auto-generation-from-product-photos/history",
+    "title": "3D model auto-generation from product photos",
+    "description": "Prepare a professional advisory report for 3d model auto-generation from product photos using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfCompetitorShowroomAnalysisAdaptingLayouts",
+    "id": "cf-competitor-showroom-analysis-adapting-layouts/history",
+    "title": "Competitor showroom analysis adapting layouts",
+    "description": "Prepare a professional advisory report for competitor showroom analysis adapting layouts using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfCustomerJourneyHeatmapVisualizingDwellTime",
+    "id": "cf-customer-journey-heatmap-visualizing-dwell-time/history",
+    "title": "Customer journey heatmap visualizing dwell time",
+    "description": "Prepare a professional advisory report for customer journey heatmap visualizing dwell time using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfPersonalizedProductRecommendationsFromBrowsingBehavior",
+    "id": "cf-personalized-product-recommendations-from-browsing-behavior/history",
+    "title": "Personalized product recommendations from browsing behavior",
+    "description": "Prepare a professional advisory report for personalized product recommendations from browsing behavior using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfSeasonalLayoutPromotionRecommender",
+    "id": "cf-seasonal-layout-promotion-recommender/history",
+    "title": "Seasonal layout/promotion recommender",
+    "description": "Prepare a professional advisory report for seasonal layout/promotion recommender using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfVisualMerchandisingOptimizerUsingConversionData",
+    "id": "cf-visual-merchandising-optimizer-using-conversion-data/history",
+    "title": "Visual merchandising optimizer using conversion data",
+    "description": "Prepare a professional advisory report for visual merchandising optimizer using conversion data using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapLimitedECommercePlatformIntegrationOnlyA",
+    "id": "gap-limited-e-commerce-platform-integration-only-a-generic-integrations/history",
+    "title": "Limited e-commerce platform integration (only a generic integrations module — not Shopify, WooCommerce specific)",
+    "description": "Prepare a professional advisory report for limited e-commerce platform integration (only a generic integrations module — not shopify, woocommerce specific) using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoAiDrivenPersonalizedProductRecommendations",
+    "id": "gap-no-ai-driven-personalized-product-recommendations/history",
+    "title": "No AI-driven personalized product recommendations",
+    "description": "Prepare a professional advisory report for no ai-driven personalized product recommendations using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoAiGenerated3dModelAutoRigging",
+    "id": "gap-no-ai-generated-3d-model-auto-rigging-from-photos/history",
+    "title": "No AI-generated 3D model auto-rigging from photos",
+    "description": "Prepare a professional advisory report for no ai-generated 3d model auto-rigging from photos using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoAiVisualMerchandisingOptimizer",
+    "id": "gap-no-ai-visual-merchandising-optimizer/history",
+    "title": "No AI visual merchandising optimizer",
+    "description": "Prepare a professional advisory report for no ai visual merchandising optimizer using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoCustomerPathHeatmapVisualization",
+    "id": "gap-no-customer-path-heatmap-visualization/history",
+    "title": "No customer path heatmap visualization",
+    "description": "Prepare a professional advisory report for no customer path heatmap visualization using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoNativeWebarWebxrPlatformIntegration",
+    "id": "gap-no-native-webar-webxr-platform-integration/history",
+    "title": "No native WebAR/WebXR platform integration",
+    "description": "Prepare a professional advisory report for no native webar/webxr platform integration using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoNotificationsSubsystem",
+    "id": "gap-no-notifications-subsystem/history",
+    "title": "No notifications subsystem",
+    "description": "Prepare a professional advisory report for no notifications subsystem using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoPosInventorySync",
+    "id": "gap-no-pos-inventory-sync/history",
+    "title": "No POS inventory sync",
+    "description": "Prepare a professional advisory report for no pos inventory sync using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNoWebhooks",
+    "id": "gap-no-webhooks/history",
+    "title": "No webhooks",
+    "description": "Prepare a professional advisory report for no webhooks using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  }
+]

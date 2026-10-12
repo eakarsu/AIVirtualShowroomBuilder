@@ -20,6 +20,27 @@ export default function Login({ onLogin }) {
     setLoading(false);
   };
 
+  const handleDemoLogin = async () => {
+    const demoEmail = import.meta.env.VITE_DEMO_EMAIL;
+    const demoPassword = import.meta.env.VITE_DEMO_PASSWORD;
+    setEmail(demoEmail || '');
+    setPassword(demoPassword || '');
+    setError('');
+    if (!demoEmail || !demoPassword) {
+      setError('Demo credentials are not configured for this environment.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const data = await api.login(demoEmail, demoPassword);
+      onLogin(data.user, data.token);
+    } catch (err) {
+      setError(err.message || 'Demo login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-page">
       <div className="login-card">
@@ -57,12 +78,12 @@ export default function Login({ onLogin }) {
 
           <button
             type="button"
-            onClick={() => { setEmail(import.meta.env.VITE_DEMO_EMAIL || ''); setPassword(import.meta.env.VITE_DEMO_PASSWORD || ''); }}
-            disabled={!import.meta.env.VITE_DEMO_EMAIL || !import.meta.env.VITE_DEMO_PASSWORD}
-            aria-label="Auto Fill Demo Credentials"
+            onClick={handleDemoLogin}
+            disabled={loading || !import.meta.env.VITE_DEMO_EMAIL || !import.meta.env.VITE_DEMO_PASSWORD}
+            aria-label="Log In as Demo"
             style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}
           >
-            Auto Fill Demo Credentials
+            Log In as Demo
           </button>
           <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginBottom: 12 }}>
             {loading ? <><span className="spinner"></span> Signing in...</> : 'Sign In'}

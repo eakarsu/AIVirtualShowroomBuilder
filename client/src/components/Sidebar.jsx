@@ -1,3 +1,4 @@
+import AIReportLibrary from "./AIReportLibrary";
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Layers, ShoppingBag, Palette, BarChart3, Target, PenTool, Sparkles, DollarSign, Users, Package, Tag, Star, Warehouse, LayoutGrid, LogOut, Glasses, Wand2 } from 'lucide-react';
@@ -84,6 +85,6 @@ export default function Sidebar({ user, onLogout }) {
           {user?.name || user?.email}
         </div>
       </div>
-    </nav>
+    <AIReportLibrary /></nav>
   );
 }

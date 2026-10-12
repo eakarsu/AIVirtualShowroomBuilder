@@ -1,3 +1,6 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import AIReport from '../components/AIReport';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api.js';
 import { ArrowLeft, Plus, Trash2, Edit3, Sparkles, X } from 'lucide-react';
@@ -346,7 +349,7 @@ export default function FeaturePage({ resource, title, subtitle, aiFeature, isAI
         <button className="back-btn" onClick={() => setSelected(null)}>
           <ArrowLeft size={16} /> Back to {title}
         </button>
-        <div className="detail-view">
+        <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
           <div className="detail-header">
             <div>
               <h2>{selected.name || selected.metric_name || selected.customer_name || selected.headline || selected.event_type || `${title} #${selected.id}`}</h2>
@@ -387,14 +390,7 @@ export default function FeaturePage({ resource, title, subtitle, aiFeature, isAI
                 {aiResult.model && <span className="model-tag">{aiResult.model}</span>}
                 {aiResult.mock && <span className="model-tag">Demo Mode</span>}
               </div>
-              {renderMarkdown(aiResult.result)}
-              {aiResult.usage && (
-                <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid rgba(139,92,246,0.15)', fontSize: 12, color: 'var(--text-muted)', display: 'flex', gap: 20 }}>
-                  <span>Tokens: {aiResult.usage.total_tokens}</span>
-                  <span>Prompt: {aiResult.usage.prompt_tokens}</span>
-                  <span>Completion: {aiResult.usage.completion_tokens}</span>
-                </div>
-              )}
+              <AIReport response={aiResult} title="AI analysis" />
             </div>
           )}
 
@@ -407,10 +403,10 @@ export default function FeaturePage({ resource, title, subtitle, aiFeature, isAI
                 </div>
                 <h3>Previous AI Analysis</h3>
               </div>
-              {renderMarkdown(selected.ai_analysis || selected.ai_output || selected.ai_suggestions)}
+              <AIReport response={selected.ai_analysis || selected.ai_output || selected.ai_suggestions} title="Previous AI analysis" />
             </div>
           )}
-        </div>
+        </AIWorkspaceModal>
       </div>
     );
   }
