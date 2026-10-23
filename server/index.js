@@ -27,6 +27,8 @@ import themeRoutes from './routes/themes.js';
 import promotionRoutes from './routes/promotions.js';
 import reviewRoutes from './routes/reviews.js';
 import inventoryRoutes from './routes/inventory.js';
+import { createFeaturePackRouter } from './featurepack.js';
+import pool from './db.js';
 
 dotenv.config();
 
@@ -71,6 +73,7 @@ app.use('/api/themes', themeRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/featurepack', createFeaturePackRouter({ listRecords: async () => (await pool.query('SELECT * FROM products ORDER BY created_at DESC LIMIT 200')).rows }));
 
 if (generatedRoutesEnabled) {
   const generated = await Promise.all([
